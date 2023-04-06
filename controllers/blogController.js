@@ -5,21 +5,21 @@ exports.getAllBlogsController = async (req, res) => {
   try {
     const blogs = await blogModel.find({});
     if (!blogs) {
-      return res.status(200).send({
+      return res.send({
         success: false,
         message: "No Blogs found",
       });
     }
 
-    return res.status(200).send({
+    return res.send({
       success: true,
       BlogCount: blogs.length,
       message: "All blogs lists",
       blogs,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).send({
+//     console.log(error);
+    return res.send({
       success: false,
       message: "Error while getting blogs",
       error,
@@ -33,7 +33,7 @@ exports.createBlogController = async (req, res) => {
     const { title, description, image } = req.body;
     //validation
     if (!title || !description || !image) {
-      return res.status(400).send({
+      return res.send({
         success: false,
         message: "Please provide all fileds",
       });
@@ -42,14 +42,14 @@ exports.createBlogController = async (req, res) => {
     //save blog
     const newBlog = new blogModel({ title, description, image });
     await newBlog.save();
-    return res.status(201).send({
+    return res.send({
       success: true,
       message: "Blog created",
       newBlog,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).send({
+//     console.log(error);
+    return res.send({
       success: false,
       message: "Error while creating blogs",
       error,
@@ -68,14 +68,14 @@ exports.updateBlogController = async (req, res) => {
       { ...req.body },
       { new: true }
     );
-    return res.status(200).send({
+    return res.send({
       success: true,
       message: "Blog Updated",
       blog,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).send({
+//     console.log(error);
+    return res.send({
       success: false,
       message: "Error while updating blogs",
       error,
@@ -89,19 +89,19 @@ exports.getBlogByIdController = async (req, res) => {
     const { id } = req.params;
     const blog = await blogModel.findById(id);
     if (!blog) {
-      return res.status(404).send({
+      return res.send({
         success: false,
         message: "blog not found with this id",
       });
     }
-    return res.status(200).send({
+    return res.send({
       success: true,
       message: "single blog fetched",
       blog,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).send({
+//     console.log(error);
+    return res.send({
       success: false,
       message: "Error while getting single blog",
       error,
@@ -115,13 +115,13 @@ exports.deleteBlogController = async (req, res) => {
     const blog = await blogModel.findByIdAndDelete(req.params.id);
     await blog.user.blogs.pull(blog);
     await blog.user.save();
-    return res.status(200).send({
+    return res.send({
       success: true,
       message: "Blog Deleted!",
     });
   } catch (error) {
-    console.log(error);
-    return res.status(400).send({
+//     console.log(error);
+    return res.send({
       success: false,
       message: "Error while deleting a blog",
       error,
